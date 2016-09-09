@@ -6,6 +6,8 @@ use Styde\Armors\MissingArmor;
 
 class Unit
 {
+    const MAX_DAMAGE = 10;
+
     protected $hp = 40;
     protected $name;
     protected $armor;
@@ -18,6 +20,13 @@ class Unit
         $this->armor = new MissingArmor();
     }
 
+    public static function createSoldier($name)
+    {
+        $soldier = new Unit($name, new Weapons\BasicSword());
+        $soldier->setArmor(new Armors\BronzeArmor());
+        return $soldier;
+    }
+
     public function getName()
     {
         return $this->name;
@@ -28,9 +37,17 @@ class Unit
         return $this->hp;
     }
 
+    public function setHp($damage)
+    {
+        if ($damage > Unit::MAX_DAMAGE) {
+            $damage = Unit::MAX_DAMAGE;
+        }
+        $this->hp = $this->hp - $damage;
+    }
+
     public function move($direction)
     {
-        show("{$this->name} avanza hacia $direction");
+        Log::info("{$this->name} avanza hacia $direction");
     }
 
 
@@ -39,34 +56,36 @@ class Unit
     public function attack(Unit $opponent)
     {
         $attack = $this->weapon->createAttack();
-        show($attack->getDescription($this, $opponent));
+        Log::info($attack->getDescription($this, $opponent));
         $opponent->takeDamage($attack);
     }
 
     public function takeDamage(Attack $attack)
     {
-        $this->hp = $this->hp - $this->armor->absorbDamage($attack);
+        $this->setHp($this->armor->absorbDamage($attack));
 
-        show("{$this->name} ahora tiene {$this->hp} puntos de vida");
+        Log::info("{$this->name} ahora tiene {$this->hp} puntos de vida");
 
         if ($this->getHp() <= 0) {
-            $this->die();
+            $this->died();
         }
     }
 
-    public function die()
+    public function died()
     {
-        show("{$this->name} muere");
+        Log::info("{$this->name} muere");
         exit();
     }
 
     public function setArmor(Armor $armor = null)
     {
         $this->armor = $armor;
+        return $this;
     }
 
     public function setWeapon(Weapon $weapon)
     {
         $this->weapon = $weapon;
+        return $this;
     }
 }
