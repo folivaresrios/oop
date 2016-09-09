@@ -1,0 +1,21 @@
+{
+  "name": "styde/oop",
+  "description": "Proyecto demo para el curso de programacion oriantada a objetos",
+  "type": "project",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Fabián Olivares Ríos",
+      "email": "f.olivaresrios@gmail.com"
+    }
+  ],
+  "require": {},
+  "autoload": {
+    "files": [
+      "src/helpers.php"
+    ],
+    "psr-4": {
+      "Styde\\": "src"
+    }
+  }
+}
